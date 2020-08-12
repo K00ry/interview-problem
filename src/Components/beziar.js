@@ -51,10 +51,10 @@ class Beziar extends Component {
         const mousemove = (event) => {
             event.preventDefault();
             let cursorPoint = this.svg.createSVGPoint();
-            console.log(cursorPoint);
             cursorPoint.x = event.clientX;
             cursorPoint.y = event.clientY;
             cursorPoint = cursorPoint.matrixTransform(this.svg.getScreenCTM().inverse());
+            console.log(cursorPoint);
             this.setState({
                 points: this.state.points.map(
                     (p, i) => (index === i ? {
@@ -62,6 +62,7 @@ class Beziar extends Component {
                         y: Math.max(Math.min(cursorPoint.y, 1000), 0)
                     } : p))
             })
+
         };
 
         const mouseup = (event) => {
