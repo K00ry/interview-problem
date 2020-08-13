@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 class Line extends Component {
     render() {
 
-        let {startPoint,position} = this.props
+        let {startPoint,position,removeLine} = this.props
         return (
-            <path className='child__line'
+            <path onClick={removeLine} className='child__line'
 
                 d={`M ${startPoint.x} ${startPoint.y} 
                         C ${startPoint.x+20 } ${startPoint.y+20 }, 

@@ -10,21 +10,13 @@ class SvgCanvas extends Component {
         objects:[
             {
                 index:0,
-                circMidpoint:{
-                    x:0,
-                    y:0
-                },
-                position:{
-                    x:0,
-                    y:0
-                }
             },
         ],
         lines:[
                 {
                     start:{
-                        x:0,
-                        y:0
+                        x1: 35,
+                        y1: 22
                     },
                     position:{
                         x:0,
@@ -32,18 +24,17 @@ class SvgCanvas extends Component {
                     }
                 }
             ]
+        ,
+        objectMoved: false
     };
 
     AddNewObject = () =>{
         this.setState({
             objects: [...this.state.objects, {
                 index:0,
-                circMidpoint:{
-                    x:0,
-                    y:0
-                }
             }]
         })
+        this.AddNewLine();
     }
     AddNewLine = () =>{
         this.setState({
@@ -51,16 +42,15 @@ class SvgCanvas extends Component {
                 ...this.state.lines,
                 {
                     start:{
-                        x:0,
-                        y:0
+                        x1: 35,
+                        y1: 22
                     },
                     position:{
                         x:0,
                         y:0
                     }
                 }
-            ]
-
+            ],
         });
     }
     getTheCenter = (lineParams,indexToChange)=>{
@@ -88,12 +78,9 @@ class SvgCanvas extends Component {
                     }
                 return object
             })
-        },
-            // (()=>console.log(this.state.objects[indexToChange]))
-        )
+        })
     }
-
-    getChangedObjectPosition =(start,indexToChange) =>{
+    getChangedObjectPosition = (start,indexToChange) =>{
 
         this.setState(  {
 
@@ -114,6 +101,28 @@ class SvgCanvas extends Component {
 
 
     };
+    removeLine = (index)=>{
+        this.setState({
+
+            lines: this.state.lines.map((object,i)=>{
+                if(index===i){
+                    return{
+                        start:{
+                            x1: 0,
+                            y1: 0
+                        },
+                        position:{
+                            x:0,
+                            y:0
+                        }
+                    }
+                }
+                return object
+            })
+        })
+
+
+    }
 
 
 
@@ -129,10 +138,9 @@ class SvgCanvas extends Component {
                         <Mine key={index}
                               getTheCenter={center=> this.getTheCenter(center,index)}
                               getChangedObjectPosition={start=>this.getChangedObjectPosition(start,index)}
-                              AddNewLine={()=>this.AddNewLine()}
+                              AddNewLine={startPosition=>this.AddNewLine(startPosition)}
                               index={index}
-                              x={item.x}
-                              y={item.y} />)
+                           />)
                     }
                     {
                         this.state.lines.map((item,index)=>
@@ -140,7 +148,9 @@ class SvgCanvas extends Component {
                                 key={index}
                                 index={index}
                                 startPoint={item.start}
-                                position={item.position}/>)
+                                position={item.position}
+                                removeLine={()=>this.removeLine(index)}/>)
+
                     }
                 </svg>
             </>

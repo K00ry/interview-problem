@@ -20,8 +20,7 @@ class Mine extends Component {
                 y: point.y - this.state.rect.y,
                 x1: point.x - this.state.circ.x1,
                 y1: point.y - this.state.circ.y1
-            },
-            // points:point
+            }
         });
 
         const mousemove = (event) => {
@@ -53,8 +52,6 @@ class Mine extends Component {
         document.addEventListener("mouseup", mouseup);
     }
 
-
-
     drawLine(event, draggedElem,index){
         event.preventDefault();
         this.setState({
@@ -77,10 +74,11 @@ class Mine extends Component {
         const mouseup = (event) => {
             document.removeEventListener("mousemove", mousemove);
             document.removeEventListener("mouseup", mouseup);
-            this.props.AddNewLine(this.state.circ,index);
         };
+
         document.addEventListener("mousemove", mousemove);
         document.addEventListener("mouseup", mouseup);
+
 
     }
 
@@ -89,10 +87,8 @@ class Mine extends Component {
     render() {
 
         return (
-            <svg viewBox="0 0 100 100"
-                 ref={(svg) => this.svg = svg}
+            <svg viewBox="0 0 100 100" ref={(svg) => this.svg = svg}>
 
-            >
                     <rect
                         rx="2"
                         width="30"
@@ -102,15 +98,13 @@ class Mine extends Component {
                         onMouseDown={(e,index) => this.startDrag(e, this.svgRectElem,index)}
 
                     />
+
                     <circle r="1.5" pathLength="10" fill="red"
                         cx={this.state.circ.x1}
                         cy={this.state.circ.y1}
                         ref={(circle) => this.circleMid = circle}
                         onMouseDown={(e,index) => this.drawLine(e, this.circleMid,index)}
                     />
-
-
-
             </svg>
 
 
