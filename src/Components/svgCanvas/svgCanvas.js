@@ -9,7 +9,7 @@ class SvgCanvas extends Component {
     state = {
         objects:[
             {
-                index:0,
+                mouseIn: false
             },
         ],
         lines:[
@@ -22,20 +22,26 @@ class SvgCanvas extends Component {
                         x:0,
                         y:0
                     }
+                    ,
+                    hideClass: false
                 }
             ]
         ,
         objectMoved: false
     };
 
+
+
     AddNewObject = () =>{
         this.setState({
             objects: [...this.state.objects, {
-                index:0,
+
+                mouseIn: false
             }]
         })
         this.AddNewLine();
     }
+
     AddNewLine = () =>{
         this.setState({
             lines:[
@@ -53,12 +59,37 @@ class SvgCanvas extends Component {
             ],
         });
     }
-    getTheCenter = (lineParams,indexToChange)=>{
+
+    setCirclePositionInState = (start,indexToChange) =>{
         this.setState({
             objects : this.state.objects.map((object,index)=> {
                 if (index === indexToChange) {
                     return {
-                        index:indexToChange,
+                        ...object,
+                        objectPosition:{
+                            x:start.x1,
+                            y:start.y1
+                        }
+                    }
+                }
+                return object
+            }),
+        })
+
+    }
+
+    updateLinePosition = (lineParams,indexToChange)=>{
+        this.setState({
+            objects : this.state.objects.map((object,index)=> {
+                if (index === indexToChange) {
+                    return {
+                        ...object,
+                        // index:indexToChange,
+                        LineEndPoint:{
+                            x:lineParams.cursorPoint.x,
+                            y:lineParams.cursorPoint.y
+                        }
+
                     }
                 }
                 return object
@@ -66,6 +97,7 @@ class SvgCanvas extends Component {
             lines:this.state.lines.map((object,index)=> {
                     if (index === indexToChange) {
                         return {
+                            ...object,
                             start:{
                                 x:lineParams.start.x1,
                                 y:lineParams.start.y1
@@ -80,10 +112,10 @@ class SvgCanvas extends Component {
             })
         })
     }
+
     getChangedObjectPosition = (start,indexToChange) =>{
 
         this.setState(  {
-
            lines: this.state.lines.map((object,index)=> {
                 if (index === indexToChange) {
 
@@ -98,10 +130,10 @@ class SvgCanvas extends Component {
                 return object
             })
         })
-
-
     };
+
     removeLine = (index)=>{
+
         this.setState({
 
             lines: this.state.lines.map((object,i)=>{
@@ -120,9 +152,70 @@ class SvgCanvas extends Component {
                 return object
             })
         })
+    }
+
+    hideLine = (index)=>{
+        this.setState({
+
+            lines: this.state.lines.map((object,i)=>{
+                if(index===i){
+                    return{
+                        ...object,
+                        hideClass: !this.state.lines[index].hideClass
+                    }
+                }
+                return object
+            })
+        })
+    }
+
+    showLine = (index)=>{
+        this.setState({
+
+            lines: this.state.lines.map((object,i)=>{
+                if(index===i){
+                    return{
+                        ...object,
+                        hideClass: !this.state.lines[index].hideClass
+                    }
+                }
+                return object
+            })
+        })
+    }
+
+    hoverState=(index)=>{
+        this.setState({
+            objects: this.state.objects.map((object,i)=>{
+                if(index===i){
+                    return{
+                        ...object,
+                        mouseIn: !this.state.objects[i].mouseIn,
+                        mouseInIndex: i
+                    }
+                }
+                return object
+            })
+        })
+    }
+
+    stickPosition=(index)=>{
+
 
 
     }
+    hoverComponent=()=>{
+     console.log( this.state.objects.map((obj,i)=>{
+         if(obj.mouseIn === true ){
+             return obj
+         }
+      }))
+
+
+
+
+    }
+
 
 
 
@@ -136,10 +229,17 @@ class SvgCanvas extends Component {
 
                     {this.state.objects.map((item,index)=>
                         <Mine key={index}
-                              getTheCenter={center=> this.getTheCenter(center,index)}
+                              setCirclePositionInState={center=>this.setCirclePositionInState(center,index)}
+                              updateLinePosition={center=> this.updateLinePosition(center,index)}
                               getChangedObjectPosition={start=>this.getChangedObjectPosition(start,index)}
                               AddNewLine={startPosition=>this.AddNewLine(startPosition)}
                               index={index}
+                              showLine={()=>this.showLine(index)}
+                              hoverState={()=>this.hoverState(index)}
+                              hoverComponent={this.hoverComponent}
+                              mouseIn={this.state.objects[index].mouseIn}
+
+                              // stickPosition={()=>this.stickPosition(index)}
                            />)
                     }
                     {
@@ -147,10 +247,11 @@ class SvgCanvas extends Component {
                             <Line
                                 key={index}
                                 index={index}
-                                startPoint={item.start}
+                                start={item.start}
                                 position={item.position}
-                                removeLine={()=>this.removeLine(index)}/>)
-
+                                removeLine={()=>this.removeLine(index)}
+                                hideClass={item.hideClass}
+                                hideLine={()=>this.hideLine(index)}/>)
                     }
                 </svg>
             </>

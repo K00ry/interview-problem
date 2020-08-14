@@ -1,14 +1,19 @@
 import React, {Component} from 'react';
 
 class Line extends Component {
+
+
     render() {
 
-        let {startPoint,position,removeLine} = this.props
-        return (
-            <path onClick={removeLine} className='child__line'
+        let {start,position,removeLine,hideClass,hideLine} = this.props;
+        let  hideClassState = hideClass ? 'child__line': "";
 
-                d={`M ${startPoint.x} ${startPoint.y} 
-                        C ${startPoint.x+20 } ${startPoint.y+20 }, 
+        return (
+            <path onClick={removeLine}
+                  // className={hideClassState}
+
+                d={`M ${start.x} ${start.y} 
+                        C ${start.x+20 } ${start.y+20 }, 
                         ${position.x} ${position.y}, 
                         ${position.x} ${position.y }`}
                 fill="transparent"
