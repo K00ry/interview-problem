@@ -5,15 +5,15 @@ class Line extends Component {
 
     render() {
 
-        let {start,position,removeLine,hideClass,hideLine} = this.props;
+        let {start,position,hideClass,hideLine} = this.props;
         let  hideClassState = hideClass ? 'child__line': "";
 
         return (
-            <path onClick={removeLine}
-                  // className={hideClassState}
+            <path onClick={hideLine}
+                  className={hideClassState}
 
                 d={`M ${start.x} ${start.y} 
-                        C ${start.x+20 } ${start.y+20 }, 
+                        C ${start.x + 20 } ${start.y + 20 }, 
                         ${position.x} ${position.y}, 
                         ${position.x} ${position.y }`}
                 fill="transparent"

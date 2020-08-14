@@ -5,8 +5,6 @@ class Mine extends Component {
     state = {
         rect: {x: 5, y: 2},
         circ:{x1: 35, y1: 22},
-        // objectMoved: false,
-        // hoverState: this.props.mouseIn
     };
 
 
@@ -56,58 +54,11 @@ class Mine extends Component {
         document.addEventListener("mouseup", mouseup);
     }
 
-    drawLine(event, draggedElem,index){
-        event.preventDefault();
-
-
-        this.props.showLine(this.props.index)
-        this.setState({
-            objectMoved: true
-        })
-        const mousemove = (event) => {
-            event.preventDefault();
-            let cursorPoint = this.svg.createSVGPoint();
-            cursorPoint.x = event.clientX;
-            cursorPoint.y = event.clientY;
-            cursorPoint = cursorPoint.matrixTransform(this.svg.getScreenCTM().inverse());
-            let start = this.state.circ;
-            let LineParams = {
-                start,
-                cursorPoint
-            };
-            console.log(LineParams);
-            this.props.updateLinePosition(LineParams, this.props.index);
-        }
-
-        const mouseup = (event) => {
-            if(!this.props.hoverState){
-               let LineParams = {
-                   cursorPoint: {x1: 35, y1: 22},
-                   start:{x1: 35, y1: 22}
-               };
-                this.props.updateLinePosition(LineParams, this.props.index);
-            }
-            document.removeEventListener("mousemove", mousemove);
-            document.removeEventListener("mouseup", mouseup);
-        };
-
-        document.addEventListener("mousemove", mousemove);
-        document.addEventListener("mouseup", mouseup);
-
-
-    }
-
-
 
 
     render() {
-
-
         return (
-            <svg viewBox="0 0 100 100"
-                 ref={(svg) => this.svg = svg}
-                // ref={this.props.setRef}
-                 onMouseEnter={ this.props.hoverComponent}>
+            <svg viewBox="0 0 100 100" ref={(svg) => this.svg = svg}>
 
                     <rect
                         rx="2"
@@ -116,6 +67,7 @@ class Mine extends Component {
                         x={this.state.rect.x}
                         y={this.state.rect.y}
                         onMouseDown={(e,index) => this.startDrag(e, this.svg,index)}
+
                     />
 
                     <circle r="1.5" pathLength="10" fill="red"
@@ -123,8 +75,8 @@ class Mine extends Component {
                         cx={this.state.circ.x1}
                         cy={this.state.circ.y1}
                         onMouseDown={(e,index) => this.props.drawLine(e, this.svg,index)}
-                        onMouseEnter={ this.props.hoverState}
-                        onMouseLeave={ this.CustomMouseEnter}
+                            onMouseEnter={ this.props.hoverState}
+                            onMouseLeave={ this.props.hoverState}
 
                     />
             </svg>

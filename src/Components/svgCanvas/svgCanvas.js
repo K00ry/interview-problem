@@ -19,14 +19,14 @@ class SvgCanvas extends Component {
         lines:[
                 {
                     start:{
-                        x1: 35,
-                        y1: 22
+                        x: 35,
+                        y: 22
                     },
                     position:{
                         x:0,
                         y:0
                     },
-                    hideClass: false
+                    hideClass: true
                 }
             ],
         objectMoved: false
@@ -51,13 +51,14 @@ class SvgCanvas extends Component {
                 ...this.state.lines,
                 {
                     start:{
-                        x1: 35,
-                        y1: 22
+                        x: 35,
+                        y: 22
                     },
                     position:{
-                        x:0,
-                        y:0
-                    }
+                        x: 35,
+                        y: 22
+                    },
+                    hideClass: true
                 }
             ],
         });
@@ -87,7 +88,6 @@ class SvgCanvas extends Component {
                 if (index === indexToChange) {
                     return {
                         ...object,
-                        // index:indexToChange,
                         LineEndPoint:{
                             x:lineParams.cursorPoint.x,
                             y:lineParams.cursorPoint.y
@@ -146,10 +146,7 @@ class SvgCanvas extends Component {
                             x1: 0,
                             y1: 0
                         },
-                        position:{
-                            x:0,
-                            y:0
-                        }
+                        position: this.state.lines[index].start
                     }
                 }
                 return object
@@ -164,7 +161,7 @@ class SvgCanvas extends Component {
                 if(index===i){
                     return{
                         ...object,
-                        hideClass: !this.state.lines[index].hideClass
+                        hideClass: true
                     }
                 }
                 return object
@@ -179,7 +176,8 @@ class SvgCanvas extends Component {
                 if(index===i){
                     return{
                         ...object,
-                        hideClass: !this.state.lines[index].hideClass
+                        // hideClass: !this.state.lines[index].hideClass
+                        hideClass: false
                     }
                 }
                 return object
@@ -194,7 +192,6 @@ class SvgCanvas extends Component {
                     return{
                         ...object,
                         mouseIn: !this.state.objects[i].mouseIn,
-                        mouseInIndex: i
                     }
                 }
                 return object
@@ -207,7 +204,6 @@ class SvgCanvas extends Component {
 
     drawLine(event, draggedElem,index){
         event.preventDefault();
-
 
         this.showLine(index);
         this.setState({
@@ -230,13 +226,20 @@ class SvgCanvas extends Component {
         }
 
         const mouseup = (event) => {
-            // if(!this.props.hoverState){
-            //     let LineParams = {
-            //         cursorPoint: {x1: 35, y1: 22},
-            //         start:{x1: 35, y1: 22}
-            //     };
-            //     this.props.updateLinePosition(LineParams, this.props.index);
-            // }
+
+           let enteredIndex = this.state.objects.findIndex((obj) =>obj.mouseIn );
+           console.log(enteredIndex);
+
+            if(enteredIndex !== -1){
+
+
+
+            }
+            let LineParams = {
+                cursorPoint: {x: 35, y: 22},
+                start:{x: 35, y: 22}
+            };
+            this.updateLinePosition(LineParams, index);
             document.removeEventListener("mousemove", mousemove);
             document.removeEventListener("mouseup", mouseup);
         };
@@ -261,14 +264,13 @@ class SvgCanvas extends Component {
                     {this.state.objects.map((item,index)=>
                         <Mine key={index}
                               setCirclePositionInState={center=>this.setCirclePositionInState(center,index)}
-                              updateLinePosition={center=> this.updateLinePosition(center,index)}
+                              // updateLinePosition={center=> this.updateLinePosition(center,index)}
                               getChangedObjectPosition={start=>this.getChangedObjectPosition(start,index)}
                               AddNewLine={startPosition=>this.AddNewLine(startPosition)}
                               index={index}
-                              showLine={()=>this.showLine(index)}
+                              // showLine={()=>this.showLine(index)}
                               hoverState={()=>this.hoverState(index)}
-                              hoverComponent={this.hoverComponent}
-                              mouseIn={this.state.objects[index].mouseIn}
+                              // mouseIn={this.state.objects[index].mouseIn}
                               drawLine={(e,draggedElem)=>this.drawLine(e,draggedElem,index)}
                               objectMoved={this.state.objectMoved}
                            />)
@@ -280,9 +282,10 @@ class SvgCanvas extends Component {
                                 index={index}
                                 start={item.start}
                                 position={item.position}
-                                removeLine={()=>this.removeLine(index)}
+                                // removeLine={()=>this.removeLine(index)}
                                 hideClass={item.hideClass}
-                                hideLine={()=>this.hideLine(index)}/>)
+                                hideLine={()=>this.hideLine(index)}
+                            />)
                     }
                 </svg>
             </>
