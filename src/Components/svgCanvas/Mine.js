@@ -5,7 +5,7 @@ class Mine extends Component {
     state = {
         rect: {x: 5, y: 2},
         circ:{x1: 35, y1: 22},
-        objectMoved: false,
+        // objectMoved: false,
         // hoverState: this.props.mouseIn
     };
 
@@ -42,7 +42,7 @@ class Mine extends Component {
                 },
             });
             this.props.setCirclePositionInState(this.state.circ,this.props.index);
-            if(this.state.objectMoved){
+            if(this.props.objectMoved){
                 this.props.getChangedObjectPosition(this.state.circ,this.props.index);
             }
         };
@@ -97,28 +97,16 @@ class Mine extends Component {
 
     }
 
-    CustomMouseEnter=()=>{
-        this.props.hoverState()
 
-    }
-
-    // componentDidMount() {
-    //     if(this.props.mouseIn){
-    //
-    //
-    //
-    //     }
-    // }
 
 
     render() {
 
 
-
-
-
         return (
-            <svg viewBox="0 0 100 100" ref={(svg) => this.svg = svg}
+            <svg viewBox="0 0 100 100"
+                 ref={(svg) => this.svg = svg}
+                // ref={this.props.setRef}
                  onMouseEnter={ this.props.hoverComponent}>
 
                     <rect
@@ -127,19 +115,16 @@ class Mine extends Component {
                         height="20"
                         x={this.state.rect.x}
                         y={this.state.rect.y}
-                        onMouseDown={(e,index) => this.startDrag(e, this.svgRectElem,index)}
+                        onMouseDown={(e,index) => this.startDrag(e, this.svg,index)}
                     />
 
                     <circle r="1.5" pathLength="10" fill="red"
 
                         cx={this.state.circ.x1}
                         cy={this.state.circ.y1}
-                        ref={(circle) => this.circleMid = circle}
-                        onMouseDown={(e,index) => this.drawLine(e, this.circleMid,index)}
+                        onMouseDown={(e,index) => this.props.drawLine(e, this.svg,index)}
                         onMouseEnter={ this.props.hoverState}
                         onMouseLeave={ this.CustomMouseEnter}
-                            // onMouseOver={this.props.hoverState}
-                            // onMouseOut={this.props.hoverState}
 
                     />
             </svg>
