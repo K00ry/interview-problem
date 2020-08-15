@@ -43,6 +43,9 @@ class Mine extends Component {
             if(this.props.objectMoved){
                 this.props.getChangedObjectPosition(this.state.circ,this.props.index);
             }
+            if(this.props.hooked){
+                this.props.hookedSpot(this.state.circ)
+            }
         };
 
 
@@ -58,7 +61,9 @@ class Mine extends Component {
 
     render() {
         return (
-            <svg viewBox="0 0 100 100" ref={(svg) => this.svg = svg}>
+            <svg viewBox="0 0 100 100" ref={(svg) => this.svg = svg}
+
+            >
 
                     <rect
                         rx="2"
@@ -67,6 +72,8 @@ class Mine extends Component {
                         x={this.state.rect.x}
                         y={this.state.rect.y}
                         onMouseDown={(e,index) => this.startDrag(e, this.svg,index)}
+                        onMouseEnter={ this.props.hoverState}
+                        onMouseLeave={ this.props.hoverState}
 
                     />
 
@@ -75,8 +82,6 @@ class Mine extends Component {
                         cx={this.state.circ.x1}
                         cy={this.state.circ.y1}
                         onMouseDown={(e,index) => this.props.drawLine(e, this.svg,index)}
-                            onMouseEnter={ this.props.hoverState}
-                            onMouseLeave={ this.props.hoverState}
 
                     />
             </svg>

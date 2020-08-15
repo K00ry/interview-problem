@@ -13,7 +13,8 @@ class SvgCanvas extends Component {
                 objectPosition:{
                     x1: 35,
                     y1: 22
-                }
+                },
+                hooked:false
             },
         ],
         lines:[
@@ -26,7 +27,12 @@ class SvgCanvas extends Component {
                         x:0,
                         y:0
                     },
-                    hideClass: true
+                    stickPosition:{
+                        x: 35,
+                        y: 22
+                    },
+                    hideClass: true,
+                    hooked:false
                 }
             ],
         objectMoved: false
@@ -78,25 +84,37 @@ class SvgCanvas extends Component {
                 }
                 return object
             }),
+            lines: this.state.lines.map((object,index)=> {
+                if (index === indexToChange) {
+                    return {
+                        ...object,
+                        stickPosition:{
+                            x:start.x1,
+                            y:start.y1
+                        }
+                    }
+                }
+                return object
+            })
         })
 
     }
 
     updateLinePosition = (lineParams,indexToChange)=>{
         this.setState({
-            objects : this.state.objects.map((object,index)=> {
-                if (index === indexToChange) {
-                    return {
-                        ...object,
-                        LineEndPoint:{
-                            x:lineParams.cursorPoint.x,
-                            y:lineParams.cursorPoint.y
-                        }
-
-                    }
-                }
-                return object
-            }),
+            // objects : this.state.objects.map((object,index)=> {
+            //     if (index === indexToChange) {
+            //         return {
+            //             ...object,
+            //             LineEndPoint:{
+            //                 x:lineParams.cursorPoint.x,
+            //                 y:lineParams.cursorPoint.y
+            //             }
+            //
+            //         }
+            //     }
+            //     return object
+            // }),
             lines:this.state.lines.map((object,index)=> {
                     if (index === indexToChange) {
                         return {
@@ -161,7 +179,8 @@ class SvgCanvas extends Component {
                 if(index===i){
                     return{
                         ...object,
-                        hideClass: true
+                        hideClass: true,
+                        hooked:false
                     }
                 }
                 return object
@@ -169,7 +188,7 @@ class SvgCanvas extends Component {
         })
     }
 
-    showLine = (index)=>{
+    showLine = (index)  =>{
         this.setState({
 
             lines: this.state.lines.map((object,i)=>{
@@ -185,7 +204,7 @@ class SvgCanvas extends Component {
         })
     }
 
-    hoverState=(index)=>{
+    hoverState = (index)=>{
         this.setState({
             objects: this.state.objects.map((object,i)=>{
                 if(index===i){
@@ -199,12 +218,27 @@ class SvgCanvas extends Component {
         })
     }
 
+    hookedSpot = hookSpot =>{
+        console.log(hookSpot);
+        this.setState({
+            lines: this.state.lines.map((line,i)=>{
+                if(line.hooked === true ){
+                    return{
+                        ...line,
+                        position: {
+                            x:hookSpot.x1,
+                            y:hookSpot.y1
+                        }
+                    }
+                }
+                return line
+            })
+        })
+    }
 
 
-
-    drawLine(event, draggedElem,index){
+    drawLine = (event, draggedElem,index) =>{
         event.preventDefault();
-
         this.showLine(index);
         this.setState({
             objectMoved: true
@@ -213,9 +247,12 @@ class SvgCanvas extends Component {
         const mousemove = (event) => {
             event.preventDefault();
             let cursorPoint = draggedElem.createSVGPoint();
-            cursorPoint.x = event.clientX;
-            cursorPoint.y = event.clientY;
+            cursorPoint.x = event.clientX ;
+            cursorPoint.y = event.clientY ;
             cursorPoint = cursorPoint.matrixTransform(draggedElem.getScreenCTM().inverse());
+            cursorPoint.x = cursorPoint.x - 2 ;
+            cursorPoint.y = cursorPoint.y - 2 ;
+
             let start = this.state.objects[index].objectPosition;
 
             let lineParams = {
@@ -228,30 +265,48 @@ class SvgCanvas extends Component {
         const mouseup = (event) => {
 
            let enteredIndex = this.state.objects.findIndex((obj) =>obj.mouseIn );
-           console.log(enteredIndex);
-
+            console.log(enteredIndex);
             if(enteredIndex !== -1){
+                this.setState({
+                    lines: this.state.lines.map((line,i)=>{
+                        if(index === i){
+                            return{
+                                ...line,
+                                hooked:true
+                            }
+                        } return line
+                    }),
+                    objects:this.state.objects.map((obj,i)=>{
+                        if(enteredIndex === i){
+                            return{
+                                ...obj,
+                                hooked:true
+                            }
+                        } return obj
+                    })
+                })
 
-
-
+                let LineParams = {
+                    cursorPoint: this.state.lines[enteredIndex].stickPosition,
+                    start:this.state.lines[index].start
+                };
+                this.updateLinePosition(LineParams, index);
+            } else{
+                let resetPosition = this.state.lines[index].start;
+                let LineParams = {
+                    cursorPoint: resetPosition,
+                    start:resetPosition,
+                };
+                this.updateLinePosition(LineParams, index);
             }
-            let LineParams = {
-                cursorPoint: {x: 35, y: 22},
-                start:{x: 35, y: 22}
-            };
-            this.updateLinePosition(LineParams, index);
+
             document.removeEventListener("mousemove", mousemove);
             document.removeEventListener("mouseup", mouseup);
         };
 
         document.addEventListener("mousemove", mousemove);
         document.addEventListener("mouseup", mouseup);
-
-
     }
-
-
-
 
 
     render() {
@@ -273,6 +328,8 @@ class SvgCanvas extends Component {
                               // mouseIn={this.state.objects[index].mouseIn}
                               drawLine={(e,draggedElem)=>this.drawLine(e,draggedElem,index)}
                               objectMoved={this.state.objectMoved}
+                              hooked={item.hooked}
+                              hookedSpot={(hookedSpot)=>this.hookedSpot(hookedSpot)}
                            />)
                     }
                     {
@@ -283,8 +340,10 @@ class SvgCanvas extends Component {
                                 start={item.start}
                                 position={item.position}
                                 // removeLine={()=>this.removeLine(index)}
+                                hooked={item.hooked}
                                 hideClass={item.hideClass}
                                 hideLine={()=>this.hideLine(index)}
+                                stickPosition={this.state.lines[index].stickPosition}
                             />)
                     }
                 </svg>
