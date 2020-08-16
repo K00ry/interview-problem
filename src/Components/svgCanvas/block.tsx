@@ -1,15 +1,47 @@
 import React, {Component} from 'react';
-import {getSvgCenter} from "../../jsUtil/index";
+import {getSvgCenter} from "../../jsUtil/";
+import {XY} from "./lines";
 
 
-class Block extends Component {
+interface IProps {
 
-    state = {
+    setCirclePositionInState: (start:XY,indexTochange:number)=>void,
+    hookedSpot: (hookSpot:XY,index:number)=>void,
+    hoverState:(e:MouseEvent,index:number)=>void,
+    drawLine:(event:MouseEvent, draggedElem:any,index:number)=>void,
+    hooked:boolean,
+    index:number
+}
+
+interface IState {
+    rect:XY,
+    circ:XY,
+    dragOffset:{
+        rect:XY,
+        circ:XY,
+    }
+
+}
+
+
+class Block extends Component <IProps,IState>{
+
+
+
+    state:IState = {
         rect: {x: 5, y: 2},
         circ:{x: 35, y: 22},
+        dragOffset:{
+            rect:{x: 5, y: 2},
+            circ:{x: 35, y: 22}
+        }
     };
 
-    startDrag(event, draggedElem,index) {
+    private svg: any;
+    // private rectSvg: SVGRect | null = null;
+
+
+    startDrag(event:MouseEvent, draggedElem:SVGRect,index:number) {
 
         event.preventDefault();
         let {rect,circ} = this.state;
@@ -28,7 +60,7 @@ class Block extends Component {
             }
         });
 
-        const mousemove = (event) => {
+        const mousemove = (event:MouseEvent) => {
             let {circ,dragOffset} = this.state;
             let {hooked,hookedSpot,setCirclePositionInState,index} = this.props
             let cursor = getSvgCenter(event,draggedElem);
@@ -50,7 +82,7 @@ class Block extends Component {
             }
         };
 
-        const mouseup = (event) => {
+        const mouseup = (event:MouseEvent) => {
             document.removeEventListener("mousemove", mousemove);
             document.removeEventListener("mouseup", mouseup);
         };
@@ -73,15 +105,15 @@ class Block extends Component {
                         height="20"
                         x={rect.x}
                         y={rect.y}
-                        onMouseDown={(e,index) => this.startDrag(e, this.svg,index)}
-                        onMouseEnter={ hoverState}
-                        onMouseLeave={ hoverState}
+                        onMouseDown={(e:MouseEvent,index:number) => this.startDrag(e, this.svg,index)}
+                        onMouseEnter={ ()=>hoverState}
+                        onMouseLeave={ ()=>hoverState}
                     />
 
                     <circle r="1.5" pathLength="10" fill="red"
                         cx={circ.x}
                         cy={circ.y}
-                        onMouseDown={(e,index) => drawLine(e, this.svg,index)}
+                        onMouseDown={(e:MouseEvent,index:number) => drawLine(e, this.svg,index)}
                     />
             </svg>
         );

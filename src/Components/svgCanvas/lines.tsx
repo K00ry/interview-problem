@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface LineProps {
+interface ILineProps {
     start:XY,
     position:XY,
     hideClass: boolean,
@@ -8,12 +8,12 @@ interface LineProps {
     index:number
 
 }
-interface XY {
+export interface XY {
     x:number,
     y:number
 }
 
-const Lines = (props :LineProps ) => {
+const Lines = (props :ILineProps ) => {
 
          let {start,position,hideClass,hideLine} = props;
          let  hideClassState = hideClass ? 'child__line': "";

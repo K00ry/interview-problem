@@ -175,7 +175,7 @@ class SvgCanvas extends Component {
         })
     }
 
-    hoverState = (index:number)=>{
+    hoverState = (e:MouseEvent,index:number)=>{
         this.setState({
             blocks: this.state.blocks.map((block,i)=>{
                 if(index===i){
