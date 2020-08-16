@@ -1,19 +1,13 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class Line extends Component {
+const Line = props => {
 
+         let {start,position,hideClass,hideLine,hooked} = props;
+         let  hideClassState = hideClass ? 'child__line': "";
 
-    render() {
-
-        let {start,position,hideClass,hideLine,hooked,stickPosition} = this.props;
-        let  hideClassState = hideClass ? 'child__line': "";
-        // let  lineEnd = hooked ? `${stickPosition.x} ${stickPosition.y}` : `${position.x} ${position.y}`;
-        // ${position.x} ${position.y}
-        // ${lineEnd}
-        return (
-            <path onClick={hideLine}
-                  className={hideClassState}
-
+    return (
+        <path   onClick={hideLine}
+                className={hideClassState}
                 d={`M ${start.x} ${start.y} 
                         C ${start.x + 20 } ${start.y + 20 }, 
                         ${position.x} ${position.y}, 
@@ -22,8 +16,8 @@ class Line extends Component {
                 stroke="blue"
                 strokeWidth="1"
             />
-        );
-    }
-}
+    );
+};
 
 export default Line;
+
