@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-
 import SvgCanvas from "./Components/svgCanvas/svgCanvas";
 
 function App() {

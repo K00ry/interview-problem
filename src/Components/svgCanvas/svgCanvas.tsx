@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import Block from "./block";
-import Line from "./line";
-import { StateMap } from "../../jsUtil/index";
-import {getSvgCenter} from "../../jsUtil/index"
+import Lines from "./lines";
+import { StateMap } from "../../jsUtil";
+import {getSvgCenter} from "../../jsUtil"
 
+interface LineParams {
+    start: object
+    cursorPoint: object
+}
 
 
 class SvgCanvas extends Component {
@@ -30,12 +34,13 @@ class SvgCanvas extends Component {
                     position:{
                         x: 35,
                         y: 22
-                    }
+                    },
+                    hookedToBlock: null
                 }
             ]
     };
 
-    setCirclePositionInState = (start,indexToChange) =>{
+    setCirclePositionInState = (start:object,indexToChange:number) =>{
         // console.log(start);
         this.setState({
             // blocks: StateMap(this.state.blocks,indexToChange,'blockPosition',start),
@@ -59,12 +64,12 @@ class SvgCanvas extends Component {
                 return block
             })
         })
-        console.log(StateMap(this.state.lines,indexToChange,'start',start));
-
-        console.log(this.state.lines);
+        // console.log(StateMap(this.state.lines,indexToChange,'start',start));
+        //
+        // console.log(this.state.lines);
     }
 
-    hookedSpot = (hookSpot,index) =>{
+    hookedSpot = (hookSpot:object,index:number) =>{
 
         this.setState({
             lines: this.state.lines.map((line)=>{
@@ -108,7 +113,7 @@ class SvgCanvas extends Component {
         });
     }
 
-    updateLinePosition = (lineParams,indexToChange)=>{
+    updateLinePosition = (lineParams:LineParams,indexToChange:number)=>{
         this.setState({
             lines:this.state.lines.map((block,index)=> {
                     if (index === indexToChange) {
@@ -127,7 +132,7 @@ class SvgCanvas extends Component {
 
 
 
-    hideLine = (index)=>{
+    hideLine = (index:number)=>{
         let indexOfHookedBlock = this.state.lines[index].hookedToBlock;
         this.setState({
             lines: this.state.lines.map((block,i)=>{
@@ -155,7 +160,7 @@ class SvgCanvas extends Component {
         })
     }
 
-    showLine = (index)  =>{
+    showLine = (index:number)  =>{
         this.setState({
 
             lines: this.state.lines.map((block,i)=>{
@@ -170,7 +175,7 @@ class SvgCanvas extends Component {
         })
     }
 
-    hoverState = (index)=>{
+    hoverState = (index:number)=>{
         this.setState({
             blocks: this.state.blocks.map((block,i)=>{
                 if(index===i){
@@ -187,14 +192,11 @@ class SvgCanvas extends Component {
 
 
 
-    drawLine = (event, draggedElem,index) =>{
+    drawLine = (event:MouseEvent, draggedElem:SVGRect,index:number) =>{
         event.preventDefault();
         this.showLine(index);
-        this.setState({
-            blockMoved: true
-        })
 
-        const mousemove = (event) => {
+        const mousemove = (event:MouseEvent) => {
             event.preventDefault();
             let cursorPoint = getSvgCenter(event,draggedElem);
             cursorPoint.x = cursorPoint.x - 2 ;
@@ -209,7 +211,7 @@ class SvgCanvas extends Component {
             this.updateLinePosition(lineParams, index);
         }
 
-        const mouseup = (event) => {
+        const mouseup = (event:MouseEvent) => {
            let enteredIndex = this.state.blocks.findIndex((obj) =>obj.mouseIn );
             if(enteredIndex !== -1){
                 this.setState({
@@ -268,23 +270,22 @@ class SvgCanvas extends Component {
 
                     {this.state.blocks.map((item,index)=>
                         <Block key={index}
-                               setCirclePositionInState={center=>this.setCirclePositionInState(center,index)}
-                               hookedSpot={(hookedSpot)=>this.hookedSpot(hookedSpot,index)}
-                               drawLine={(e,draggedElem)=>this.drawLine(e,draggedElem,index)}
+                               setCirclePositionInState={(center:object)=>this.setCirclePositionInState(center,index)}
+                               hookedSpot={(hookedSpot:object)=>this.hookedSpot(hookedSpot,index)}
+                               drawLine={(e:MouseEvent,draggedElem:DOMRect)=>this.drawLine(e,draggedElem,index)}
                                index={index}
                                hoverState={()=>this.hoverState(index)}
-                               blockMoved={this.state.blockMoved}
                                hooked={item.hooked}
                            />)
                     }
                     {
                         this.state.lines.map((item,index)=>
-                            <Line
+                            <Lines
                                 key={index}
                                 index={index}
                                 start={item.start}
                                 position={item.position}
-                                hooked={item.hooked}
+                                // hooked={item.hooked}
                                 hideClass={item.hideClass}
                                 hideLine={()=>this.hideLine(index)}
                             />)

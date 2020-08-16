@@ -1,8 +1,21 @@
 import React from 'react';
 
-const Line = props => {
+interface LineProps {
+    start:XY,
+    position:XY,
+    hideClass: boolean,
+    hideLine: ()=> void,
+    index:number
 
-         let {start,position,hideClass,hideLine,hooked} = props;
+}
+interface XY {
+    x:number,
+    y:number
+}
+
+const Lines = (props :LineProps ) => {
+
+         let {start,position,hideClass,hideLine} = props;
          let  hideClassState = hideClass ? 'child__line': "";
 
     return (
@@ -19,5 +32,4 @@ const Line = props => {
     );
 };
 
-export default Line;
-
+export default Lines;
