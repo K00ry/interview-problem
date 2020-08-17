@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Block from "./block";
 import Lines from "./lines";
-import {getSvgCenter,StateMap} from "../../jsUtil"
+import { getSvgCenter } from "../../jsUtil"
 
 interface LineParams {
     start: XY,
@@ -17,8 +17,7 @@ class SvgCanvas extends Component {
 
     state = {
         blocks:[
-            {
-                mouseIn: false,
+            {mouseIn: false,
                 hooked:false,
                 blockPosition:{
                     x: 35,
@@ -27,8 +26,7 @@ class SvgCanvas extends Component {
             },
         ],
         lines:[
-                {
-                    hideClass: true,
+                {hideClass: true,
                     hooked:false,
                     start:{
                         x: 35,
@@ -44,9 +42,8 @@ class SvgCanvas extends Component {
     };
 
     setCirclePositionInState = (start:XY,indexToChange:number) =>{
-        // console.log(start);
+
         this.setState({
-            // blocks: StateMap(this.state.blocks,indexToChange,'blockPosition',start),
             blocks : this.state.blocks.map((block,index)=> {
                 if (index === indexToChange) {
                     return {
@@ -67,9 +64,6 @@ class SvgCanvas extends Component {
                 return block
             })
         })
-        // console.log(StateMap(this.state.lines,indexToChange,'start',start));
-        //
-        // console.log(this.state.lines);
     }
 
     hookedSpot = (hookSpot:XY,index:number) =>{
@@ -214,7 +208,7 @@ class SvgCanvas extends Component {
         }
 
         const mouseup = (event:MouseEvent) => {
-           let enteredIndex = this.state.blocks.findIndex((obj) =>obj.mouseIn );
+           let enteredIndex:number = this.state.blocks.findIndex((obj) =>obj.mouseIn );
 
             if(enteredIndex !== -1){
                 this.setState({
@@ -238,16 +232,16 @@ class SvgCanvas extends Component {
                     })
                 })
 
-                let LineParams = {
+                let LineParams:LineParams = {
                     cursorPoint: this.state.lines[enteredIndex].start,
                     start:this.state.lines[index].start
                 };
                 this.updateLinePosition(LineParams, index);
-
             }
+
             else{
                 let resetPosition = this.state.lines[index].start;
-                let LineParams = {
+                let LineParams:LineParams = {
                     cursorPoint: resetPosition,
                     start:resetPosition,
                 };
@@ -295,9 +289,6 @@ class SvgCanvas extends Component {
         );
     }
 }
-
-
-
 
 
 export default SvgCanvas;

@@ -1,4 +1,5 @@
 import React from 'react';
+import {XY} from "./svgCanvas";
 
 interface ILineProps {
     start:XY,
@@ -6,12 +7,8 @@ interface ILineProps {
     hideClass: boolean,
     hideLine: ()=> void,
     index:number
+}
 
-}
-export interface XY {
-    x:number,
-    y:number
-}
 
 const Lines = (props :ILineProps ) => {
 
@@ -22,8 +19,8 @@ const Lines = (props :ILineProps ) => {
         <path   onClick={hideLine}
                 className={hideClassState}
                 d={`M ${start.x} ${start.y} 
-                        C ${start.x + 20 } ${start.y + 20 }, 
-                        ${position.x} ${position.y}, 
+                    C ${start.x + 20 } ${start.y + 20 }, 
+                       ${position.x} ${position.y}, 
                        ${position.x} ${position.y}`}
                 fill="transparent"
                 stroke="blue"

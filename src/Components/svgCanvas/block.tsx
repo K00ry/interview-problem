@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {getSvgCenter} from "../../jsUtil/";
-import {XY} from "./lines";
+import {XY} from "./svgCanvas";
 
 
 interface IBlockProps {
@@ -58,9 +58,10 @@ class Block extends Component <IBlockProps,IBlockState>{
         });
 
         const mousemove = (event:MouseEvent) => {
-            let {circ,dragOffset} = this.state;
-            let {hooked,hookedSpot,setCirclePositionInState,index} = this.props
+            let { circ,dragOffset } = this.state;
+            let { hooked,hookedSpot,setCirclePositionInState,index } = this.props
             let cursor = getSvgCenter(event,draggedElem);
+
             this.setState({
                 rect: {
                     x: cursor.x - dragOffset.rect.x,
@@ -95,7 +96,10 @@ class Block extends Component <IBlockProps,IBlockState>{
         const { hoverState, drawLine, index } = this.props;
 
         return (
-            <svg viewBox="0 0 100 100" ref={(svg:SVGSVGElement) => this.svg = svg}>
+            <svg viewBox="0 0 100 100"
+                 ref={(svg:SVGSVGElement) => this.svg = svg}
+                 onMouseEnter={()=> hoverState(index)}
+                 onMouseLeave={()=> hoverState(index)}>
 
                 <rect
                     rx="2"
@@ -104,8 +108,7 @@ class Block extends Component <IBlockProps,IBlockState>{
                     x={rect.x}
                     y={rect.y}
                     onMouseDown={(e:React.MouseEvent<SVGRectElement,MouseEvent>) => (this.svg && this.startDrag(e, this.svg))}
-                    onMouseEnter={()=> hoverState(index)}
-                    onMouseLeave={()=> hoverState(index)}
+
                 />
 
 
