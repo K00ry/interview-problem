@@ -37,7 +37,14 @@
   }
 }
 
+.child__line.child__line--hide{
+  display: none;
+}
 
 .child__line{
-  display: none;
+
+}
+.btn{
+  margin-top: 1em ;
+  margin-bottom: 2em;
 }

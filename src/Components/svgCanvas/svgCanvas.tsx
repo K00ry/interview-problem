@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import Block from "./block";
 import Lines from "./lines";
-import { StateMap } from "../../jsUtil";
-import {getSvgCenter} from "../../jsUtil"
+import {getSvgCenter,StateMap} from "../../jsUtil"
 
 interface LineParams {
-    start: object
-    cursorPoint: object
+    start: XY,
+    cursorPoint: XY
+}
+export interface XY {
+    x:number,
+    y:number
 }
 
 
@@ -40,7 +43,7 @@ class SvgCanvas extends Component {
             ]
     };
 
-    setCirclePositionInState = (start:object,indexToChange:number) =>{
+    setCirclePositionInState = (start:XY,indexToChange:number) =>{
         // console.log(start);
         this.setState({
             // blocks: StateMap(this.state.blocks,indexToChange,'blockPosition',start),
@@ -69,7 +72,7 @@ class SvgCanvas extends Component {
         // console.log(this.state.lines);
     }
 
-    hookedSpot = (hookSpot:object,index:number) =>{
+    hookedSpot = (hookSpot:XY,index:number) =>{
 
         this.setState({
             lines: this.state.lines.map((line)=>{
@@ -87,11 +90,15 @@ class SvgCanvas extends Component {
     AddNewBlock = () =>{
         this.setState({
             blocks: [...this.state.blocks, {
-                mouseIn: false
+                hooked:false,
+                mouseIn: false,
+                blockPosition:{
+                    x: 35,
+                    y: 22
+                }
             }]
         })
         this.AddNewLine();
-
     }
 
     AddNewLine = () =>{
@@ -128,9 +135,6 @@ class SvgCanvas extends Component {
             })
         })
     }
-
-
-
 
     hideLine = (index:number)=>{
         let indexOfHookedBlock = this.state.lines[index].hookedToBlock;
@@ -175,7 +179,8 @@ class SvgCanvas extends Component {
         })
     }
 
-    hoverState = (e:MouseEvent,index:number)=>{
+    hoverState = (index:number)=>{
+
         this.setState({
             blocks: this.state.blocks.map((block,i)=>{
                 if(index===i){
@@ -189,10 +194,7 @@ class SvgCanvas extends Component {
         })
     }
 
-
-
-
-    drawLine = (event:MouseEvent, draggedElem:SVGRect,index:number) =>{
+    drawLine = (event:React.MouseEvent<SVGCircleElement,MouseEvent>, draggedElem:SVGSVGElement,index:number) =>{
         event.preventDefault();
         this.showLine(index);
 
@@ -213,6 +215,7 @@ class SvgCanvas extends Component {
 
         const mouseup = (event:MouseEvent) => {
            let enteredIndex = this.state.blocks.findIndex((obj) =>obj.mouseIn );
+
             if(enteredIndex !== -1){
                 this.setState({
                     lines: this.state.lines.map((line,i)=>{
@@ -265,37 +268,32 @@ class SvgCanvas extends Component {
 
         return (
             <>
-                <button onClick={this.AddNewBlock}>Add Item</button>
+                <button className='btn' onClick={this.AddNewBlock}>Add Block</button>
                 <svg viewBox="0 0 100 100" >
 
                     {this.state.blocks.map((item,index)=>
                         <Block key={index}
-                               setCirclePositionInState={(center:object)=>this.setCirclePositionInState(center,index)}
-                               hookedSpot={(hookedSpot:object)=>this.hookedSpot(hookedSpot,index)}
-                               drawLine={(e:MouseEvent,draggedElem:DOMRect)=>this.drawLine(e,draggedElem,index)}
+                               setCirclePositionInState={(center:XY)=>this.setCirclePositionInState(center,index)}
+                               hookedSpot={(hookedSpot:XY)=>this.hookedSpot(hookedSpot,index)}
+                               drawLine={(e:React.MouseEvent<SVGCircleElement,MouseEvent>,draggedElem:SVGSVGElement)=>this.drawLine(e,draggedElem,index)}
                                index={index}
                                hoverState={()=>this.hoverState(index)}
                                hooked={item.hooked}
-                           />)
-                    }
-                    {
-                        this.state.lines.map((item,index)=>
+                           />)}
+
+                    {this.state.lines.map((item,index)=>
                             <Lines
                                 key={index}
                                 index={index}
                                 start={item.start}
                                 position={item.position}
-                                // hooked={item.hooked}
                                 hideClass={item.hideClass}
                                 hideLine={()=>this.hideLine(index)}
-                            />)
-                    }
+                            />)}
                 </svg>
             </>
         );
     }
-
-
 }
 
 

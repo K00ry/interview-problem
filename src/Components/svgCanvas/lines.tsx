@@ -15,8 +15,8 @@ export interface XY {
 
 const Lines = (props :ILineProps ) => {
 
-         let {start,position,hideClass,hideLine} = props;
-         let  hideClassState = hideClass ? 'child__line': "";
+         const {start,position,hideClass,hideLine} = props;
+         const  hideClassState = hideClass ? 'child__line child__line--hide ': "child__line";
 
     return (
         <path   onClick={hideLine}
